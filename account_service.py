@@ -4,7 +4,9 @@ This script creates a small web service that allows for remote account creation.
 
 Requires: flask, MySQL-python
 
-Example usage: curl --data "username=flasktest&password=password&token=acmsecret" bdo.pw:5000/user/add -X POST
+Assumptions: if bracket are used, the script assumes a 1400, 1620 and open team_category have been created
+
+Example usage: curl --data "username=flasktest&password=password&token=acmsecret&bracket=open" bdo.pw:5000/user/add -X POST
 """
 
 from flask import *
@@ -54,7 +56,10 @@ def insert_user(username, password, bracket="1", name="NULL", email="NULL"):
 def user_add():
     if request.form.get("username") and request.form.get("password") and request.form.get("token") and request.form.get('name'):
 	if request.form.get("token") == "acmsecret":
-	    return insert_user(request.form.get("username"), request.form.get("password"), name=request.form.get('name'), cat=request.form.get('bracket', "1"))
+	    return insert_user(request.form.get("username"),
+	            request.form.get("password"),
+	            name=request.form.get('name'),
+	            bracket=request.form.get('bracket', "1"))
 	else:
 	    print "Error: Invalid token"
             abort(418)
