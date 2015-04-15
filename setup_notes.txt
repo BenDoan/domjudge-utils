@@ -1,0 +1,2 @@
+- Ubuntu seems to have trouble with cgroups when running the judgedaemon. Switching to debian solved all of the problems I had there.
+-
