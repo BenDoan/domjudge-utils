@@ -19,13 +19,13 @@ def insert_user(username, password, name="NULL", email="NULL"):
         conn = mdb.connect('localhost', 'root', 'testpass', 'domjudge')
         cur = conn.cursor()
 
-        hashed_password = username + "#" + password
+	hashed_password = username + "#" + password
 
 	insert_user_query = """INSERT INTO 
 				domjudge.user (userid, username, name, email, last_login, last_ip_address, password, ip_address, enabled, teamid) 
-				VALUES (NULL, '{}', '{}', md5('{}'), NULL, NULL, '{}', NULL, '4', NULL);""".format(username, name, email, hashed_password)
+				VALUES (NULL, %s, %s, %s, NULL, NULL, md5(%s),NULL, '1', '4');"""
 
-        cur.execute(insert_user_query)
+        cur.execute(insert_user_query, (username, name, email, hashed_password))
 	conn.commit()
     except mdb.Error, e:
         return "Error: %s" % e
@@ -34,10 +34,14 @@ def insert_user(username, password, name="NULL", email="NULL"):
 
 @app.route('/user/add', methods=['POST'])
 def hello_world():
-    if request.form.get("username") and request.form.get("password") and request.form.get("token"):
+    if request.form.get("username") and request.form.get("password") and request.form.get("token") and request.form.get('name'):
 	if request.form.get("token") == "acmsecret":
-	    return insert_user(request.form.get("username"), request.form.get("password"))
+	    return insert_user(request.form.get("username"), request.form.get("password"), name=request.form.get('name'))
+	else:
+	    print "Error: Invalid token"
+            abort(418)
     else:
+        print "Error: Invalid POST: {}".format(request.form)
         abort(418)
 
 if __name__ == '__main__':
