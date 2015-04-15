@@ -16,6 +16,8 @@ import sys
 
 app = Flask(__name__)
 
+TEAM_ROLE_ID = 3
+
 def insert_user(username, password, bracket="1", name="NULL", email="NULL"):
     try:
         conn = mdb.connect('localhost', 'root', 'testpass', 'domjudge')
@@ -45,6 +47,12 @@ def insert_user(username, password, bracket="1", name="NULL", email="NULL"):
 
 	hashed_password = username + "#" + password
         cur.execute(insert_user_query, (username, name, email, hashed_password, team))
+
+	insert_userrole_query = """INSERT INTO
+				domjudge.userrole (userid, roleid)
+				VALUES (%s, %s);"""
+
+        cur.execute(insert_userrole_query, (conn.insert_id(), TEAM_ROLE_ID))
 
 	conn.commit()
     except mdb.Error, e:
