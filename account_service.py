@@ -14,14 +14,22 @@ import sys
 
 app = Flask(__name__)
 
-def insert_user(username, password, name="NULL", email="NULL"):
+def insert_user(username, password, bracket="1", name="NULL", email="NULL"):
     try:
         conn = mdb.connect('localhost', 'root', 'testpass', 'domjudge')
         cur = conn.cursor()
 
-	hashed_password = username + "#" + password
+        if bracket == "1400":
+            cur.execute("SELECT * FROM team_category WHERE name='1400'")
+            cat = cur.fetchone()[0]
+        elif bracket == "1620":
+            cur.execute("SELECT * FROM team_category WHERE name='1620'")
+            cat = cur.fetchone()[0]
+        elif bracket == "open":
+            cur.execute("SELECT * FROM team_category WHERE name='Open'")
+            cat = cur.fetchone()[0]
 
-	cat = '1'
+
 	insert_team_query = """INSERT INTO
 	                        domjudge.team (teamid, externalid, name, categoryid, affilid, enabled, members, room, comments, judging_last_started, teampage_first_visited, hostname)
 	                        VALUES (NULL, NULL, %s, %s, NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL);"""
@@ -32,7 +40,10 @@ def insert_user(username, password, name="NULL", email="NULL"):
 	insert_user_query = """INSERT INTO
 				domjudge.user (userid, username, name, email, last_login, last_ip_address, password, ip_address, enabled, teamid)
 				VALUES (NULL, %s, %s, %s, NULL, NULL, md5(%s),NULL, '1', %s);"""
+
+	hashed_password = username + "#" + password
         cur.execute(insert_user_query, (username, name, email, hashed_password, team))
+
 	conn.commit()
     except mdb.Error, e:
         return "Error: %s" % e
@@ -43,7 +54,7 @@ def insert_user(username, password, name="NULL", email="NULL"):
 def user_add():
     if request.form.get("username") and request.form.get("password") and request.form.get("token") and request.form.get('name'):
 	if request.form.get("token") == "acmsecret":
-	    return insert_user(request.form.get("username"), request.form.get("password"), name=request.form.get('name'))
+	    return insert_user(request.form.get("username"), request.form.get("password"), name=request.form.get('name'), cat=request.form.get('bracket', "1"))
 	else:
 	    print "Error: Invalid token"
             abort(418)
