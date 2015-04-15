@@ -58,6 +58,8 @@ def insert_user(username, password, bracket="1", name="NULL"):
     except mdb.Error, e:
         return "Error: %s" % e
 
+    print "Added user {}:{} in bracket {}".format(username, name, bracket)
+
     return "Success"
 
 @app.route('/user/add', methods=['POST'])
