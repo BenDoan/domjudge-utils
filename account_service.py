@@ -21,11 +21,18 @@ def insert_user(username, password, name="NULL", email="NULL"):
 
 	hashed_password = username + "#" + password
 
-	insert_user_query = """INSERT INTO 
-				domjudge.user (userid, username, name, email, last_login, last_ip_address, password, ip_address, enabled, teamid) 
-				VALUES (NULL, %s, %s, %s, NULL, NULL, md5(%s),NULL, '1', '4');"""
+	cat = '1'
+	insert_team_query = """INSERT INTO
+	                        domjudge.team (teamid, externalid, name, categoryid, affilid, enabled, members, room, comments, judging_last_started, teampage_first_visited, hostname)
+	                        VALUES (NULL, NULL, %s, %s, NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL);"""
+        cur.execute(insert_team_query, (username, cat))
 
-        cur.execute(insert_user_query, (username, name, email, hashed_password))
+        team = conn.insert_id()
+
+	insert_user_query = """INSERT INTO
+				domjudge.user (userid, username, name, email, last_login, last_ip_address, password, ip_address, enabled, teamid)
+				VALUES (NULL, %s, %s, %s, NULL, NULL, md5(%s),NULL, '1', %s);"""
+        cur.execute(insert_user_query, (username, name, email, hashed_password, team))
 	conn.commit()
     except mdb.Error, e:
         return "Error: %s" % e
@@ -33,7 +40,7 @@ def insert_user(username, password, name="NULL", email="NULL"):
     return "Success"
 
 @app.route('/user/add', methods=['POST'])
-def hello_world():
+def user_add():
     if request.form.get("username") and request.form.get("password") and request.form.get("token") and request.form.get('name'):
 	if request.form.get("token") == "acmsecret":
 	    return insert_user(request.form.get("username"), request.form.get("password"), name=request.form.get('name'))
@@ -43,6 +50,10 @@ def hello_world():
     else:
         print "Error: Invalid POST: {}".format(request.form)
         abort(418)
+
+@app.route('/')
+def hello():
+    return "Hello"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
