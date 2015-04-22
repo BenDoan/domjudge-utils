@@ -1,2 +1,3 @@
 - Ubuntu seems to have trouble with cgroups when running the judgedaemon. Switching to debian solved all of the problems I had there.
--
+- Required extra packages for judgehost on debian: libjsoncpp-dev libboost-regex-dev libcurl4-openssl-dev libcgroup1 libcgroup-dev
+- Required packages for chroot: libgcc1,libc6,libc6-dev,python3,ruby,swi-prolog,perl,unzip
