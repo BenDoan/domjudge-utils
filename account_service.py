@@ -20,19 +20,11 @@ TEAM_ROLE_ID = 3
 
 def insert_user(username, password, bracket="1", name="NULL"):
     try:
-        conn = mdb.connect('localhost', 'root', 'testpass', 'domjudge')
+        conn = mdb.connect('localhost', 'domjudge', 'testpass', 'domjudge')
         cur = conn.cursor()
 
-        if bracket == "1400":
-            cur.execute("SELECT * FROM team_category WHERE name='1400'")
-            cat = cur.fetchone()[0]
-        elif bracket == "1620":
-            cur.execute("SELECT * FROM team_category WHERE name='1620'")
-            cat = cur.fetchone()[0]
-        elif bracket == "open":
-            cur.execute("SELECT * FROM team_category WHERE name='Open'")
-            cat = cur.fetchone()[0]
-
+        cur.execute("SELECT * FROM team_category WHERE name='Participants'")
+        cat = cur.fetchone()[0]
 
 	insert_team_query = """INSERT INTO
 	                        domjudge.team (teamid, externalid, name, categoryid, affilid, enabled, members, room, comments, judging_last_started, teampage_first_visited, hostname)
