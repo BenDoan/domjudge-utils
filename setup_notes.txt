@@ -1,3 +1,27 @@
+# General Strategy
+- I used two machines (two ec2 instances), one for the main domjudge instane, and one for the judgehost
+- For the most part I followed the domjudge installation docs
+
+# Extra steps
+# Database
+- Connect to mysql: mysql -u root -p
+- Create mysql user for domjudge: create user 'domjudge'@'localhost' identified by 'xxxxxxx';
+- Create database: create database domjudge;
+- Grant access to database: grant all privileges on domjudge.* to 'domjudge'@'localhost';
+
+## Judgehost
+- run dj_make_chroot /chroot/domjudge amd64
+- install in chroot: unzip python python2
+- language packages: perl python python3 ruby lua5.2 SWI-Prolog gfortran
+- I had to install the languages in the chroot and the host for them to work
+
+# Misc
 - Ubuntu seems to have trouble with cgroups when running the judgedaemon. Switching to debian solved all of the problems I had there.
-- Required extra packages for judgehost on debian: libjsoncpp-dev libboost-regex-dev libcurl4-openssl-dev libcgroup1 libcgroup-dev
-- Required packages for chroot: libgcc1,libc6,libc6-dev,python3,ruby,swi-prolog,perl,unzip
+- Misc packages: git curl tmux mosh vim
+- Extra packages for domserver on debian: libcurl4-openssl-dev libjsoncpp-dev
+- Extra packages for judgehost on debian: libjsoncpp-dev libboost-regex-dev libcurl4-openssl-dev libcgroup1 libcgroup-dev
+- Required packages for chroot: libgcc1 libc6 libc6-dev python3 ruby swi-prolog perl unzip
+
+
+- sudo apt-get install libmysqlclient-dev python-dev
+- pip install MySQL-python
