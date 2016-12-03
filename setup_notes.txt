@@ -20,8 +20,9 @@
 - Misc packages: git curl tmux mosh vim
 - Extra packages for domserver on debian: libcurl4-openssl-dev libjsoncpp-dev
 - Extra packages for judgehost on debian: libjsoncpp-dev libboost-regex-dev libcurl4-openssl-dev libcgroup1 libcgroup-dev
-- Required packages for chroot: libgcc1 libc6 libc6-dev python3 ruby swi-prolog perl unzip
+- Required packages for chroot: libgcc1 libc6 libc6-dev python lua5.2 python3 ruby swi-prolog perl unzip gfortran
 
 
-- sudo apt-get install libmysqlclient-dev python-dev
-- pip install MySQL-python
+## for account service
+- sudo apt-get install libmysqlclient-dev python-dev python-pip
+- pip install MySQL-python flask
