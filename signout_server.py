@@ -19,18 +19,23 @@ def check_auth(username, password):
             password == PASSWORD
 
 
-@get('/<name:re:[A-Za-z0-9-_]+>')
+@get('/<name:re:[@.A-Za-z0-9-_]+>')
 @auth_basic(check_auth)
 def index(name):
-    with open("signout_times.csv", "w+") as f:
-        f.write("{},{}".format(name, int(time.time())))
+    with open("signout_times.csv", "a+") as f:
+        f.write('{},{}\n'.format(name, int(time.time())))
 
-    return "Good ({} {})".format(name, datetime.now())
+    return '''<!DOCTYPE html><html><head></head>Good ({} {})<body>
+	<audio autoplay> <source src="/static/A-Tone.wav" type="audio/wav"> </audio></body></html>'''.format(name, datetime.now())
 
 # misc
 @route('/static/<path:path>')
 def static(path):
     return static_file(path, root=get_script_rel_path("static"))
+
+@route('/A-Tone.wav')
+def static(path):
+    return static_file("A-Tone.wav")
 
 def get_script_rel_path(filepath):
     script_dir = os.path.dirname(os.path.realpath(__file__))

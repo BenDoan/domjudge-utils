@@ -2,3 +2,4 @@ env
 personal_notes.txt
 __pycache__/
 signout_times.csv
+*.pyc
